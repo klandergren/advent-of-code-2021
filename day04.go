@@ -148,7 +148,7 @@ func (b *BingoBoard) IsWinner() bool {
 	return false
 }
 
-func RunGame(game []int, boards []*BingoBoard) int {
+func FindFirstWinner(game []int, boards []*BingoBoard) int {
 	for _, n := range game {
 		for _, b := range boards {
 			b.Play(n)
@@ -160,7 +160,42 @@ func RunGame(game []int, boards []*BingoBoard) int {
 	return 0
 }
 
+func FindLastWinner(game []int, boards []*BingoBoard) int {
+	winnerCount := 0
+	for _, n := range game {
+		for _, b := range boards {
+			if b.IsWinner() {
+				continue
+			}
+			b.Play(n)
+			if b.IsWinner() {
+				winnerCount++
+				if winnerCount == len(boards) {
+					return b.SumUnmarked() * n
+				}
+			}
+		}
+	}
+	return 0
+}
+
 func part1() {
+	game, boards := load()
+
+	winningScore := FindFirstWinner(game, boards)
+
+	fmt.Println("part 1: ", winningScore)
+}
+
+func part2() {
+	game, boards := load()
+
+	winningScore := FindLastWinner(game, boards)
+
+	fmt.Println("part 2: ", winningScore)
+}
+
+func load() (game []int, boards []*BingoBoard) {
 	//file, err := os.Open("./test-data/day04.txt")
 	file, err := os.Open("./input-data/day04.txt")
 
@@ -173,9 +208,6 @@ func part1() {
 	r := bufio.NewReader(file)
 	s := bufio.NewScanner(r)
 	s.Split(ScanEmptyLines)
-
-	var game []int
-	var boards []*BingoBoard
 
 	// load data
 	isFirstLine := true
@@ -197,11 +229,5 @@ func part1() {
 		boards = append(boards, NewBingoBoard(strings.TrimSpace(s.Text())))
 	}
 
-	// runner: run game
-	winningScore := RunGame(game, boards)
-
-	fmt.Println("part 1: ", winningScore)
-}
-
-func part2() {
+	return game, boards
 }
