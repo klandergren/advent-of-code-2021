@@ -39,23 +39,41 @@ type BingoSquare struct {
 	IsMarked bool
 }
 
+func (sq *BingoSquare) String() string {
+	if sq.IsMarked {
+		return fmt.Sprintf("%2d'", sq.Value)
+	} else {
+		return fmt.Sprintf("%2d ", sq.Value)
+	}
+}
+
 type BingoBoard struct {
 	gridYX [][]*BingoSquare
 }
 
+func (b *BingoBoard) String() string {
+	var sb strings.Builder
+
+	sb.WriteString("\n")
+	for _, row := range b.gridYX {
+		for _, square := range row {
+			sb.WriteString(square.String())
+			sb.WriteString(" ")
+		}
+		sb.WriteString("\n")
+	}
+
+	return sb.String()
+}
+
 func NewBingoBoard(rawData string) *BingoBoard {
-	fmt.Println(rawData)
 	rows := strings.Split(rawData, "\n")
 
 	gridYX := make([][]*BingoSquare, 5)
 	for y, row := range rows {
-		fmt.Println("y:", y)
-		fmt.Println("row:", row)
 		gridYX[y] = make([]*BingoSquare, 5)
 
 		for x, stringValue := range strings.Fields(row) {
-			fmt.Println("x:", x)
-			fmt.Println("stringValue:", stringValue)
 			intValue, err := strconv.Atoi(stringValue)
 
 			if err != nil {
@@ -69,41 +87,82 @@ func NewBingoBoard(rawData string) *BingoBoard {
 		}
 	}
 
-	fmt.Println(gridYX)
 	return &BingoBoard{
 		gridYX,
 	}
 }
 
-func (b *BingoBoard) Play(game []int) (isWinner bool, score int) {
-	fmt.Printf("playing game: %+v\n", game)
-
-	// mark drawn numbers
-	for _, n := range game {
-		for _, row := range b.gridYX {
-			for _, square := range row {
-				fmt.Printf("square before: %+v\n", square)
-				square.IsMarked = (square.Value == n)
-				fmt.Printf("square after: %+v\n", square)
+func (b *BingoBoard) SumUnmarked() int {
+	sum := 0
+	for _, row := range b.gridYX {
+		for _, square := range row {
+			if !square.IsMarked {
+				sum += square.Value
 			}
 		}
 	}
-	fmt.Printf("board: %+v\n", b)
+	return sum
+}
 
-	// check rows
+func (b *BingoBoard) Reset() {
 	for _, row := range b.gridYX {
 		for _, square := range row {
+			square.IsMarked = false
+		}
+	}
+}
+
+func (b *BingoBoard) Play(num int) {
+	for _, row := range b.gridYX {
+		for _, square := range row {
+			if square.Value == num {
+				square.IsMarked = true
+			}
+		}
+	}
+}
+
+func (b *BingoBoard) IsWinner() bool {
+	// check rows
+	for _, row := range b.gridYX {
+		hasCompleteRow := true
+		for _, square := range row {
+			hasCompleteRow = hasCompleteRow && square.IsMarked
+		}
+		if hasCompleteRow {
+			return true
 		}
 	}
 
 	// check cols
+	for x := 0; x < 5; x++ {
+		hasCompleteCol := true
+		for y := 0; y < 5; y++ {
+			square := b.gridYX[y][x]
+			hasCompleteCol = hasCompleteCol && square.IsMarked
+		}
+		if hasCompleteCol {
+			return true
+		}
+	}
+	return false
+}
 
-	return false, 0
+func RunGame(game []int, boards []*BingoBoard) int {
+	for _, n := range game {
+		for _, b := range boards {
+			b.Play(n)
+			if b.IsWinner() {
+				return b.SumUnmarked() * n
+			}
+		}
+	}
+	return 0
 }
 
 func part1() {
-	file, err := os.Open("./test-data/day04.txt")
-	//file, err := os.Open("./input-data/day03.txt")
+	//file, err := os.Open("./test-data/day04.txt")
+	file, err := os.Open("./input-data/day04.txt")
 
 	if err != nil {
 		log.Fatal(err)
@@ -137,19 +196,9 @@ func part1() {
 		// load data: create boards
 		boards = append(boards, NewBingoBoard(strings.TrimSpace(s.Text())))
 	}
-	fmt.Printf("game: %+v\n", game)
-	fmt.Printf("boards: %+v\n", boards)
 
 	// runner: run game
-	winningScore := 0
-	for i := 1; i < len(game); i++ {
-		for _, b := range boards {
-			if isWinner, score := b.Play(game[:i]); isWinner {
-				winningScore = score
-				fmt.Println("we win. score:", score)
-			}
-		}
-	}
+	winningScore := RunGame(game, boards)
 
 	fmt.Println("part 1: ", winningScore)
 }
