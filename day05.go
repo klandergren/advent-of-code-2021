@@ -71,32 +71,64 @@ func (vl *VentLine) MaxY() int {
 func (vl *VentLine) Coords() []*Coord {
 	coords := make([]*Coord, 0)
 
-	switch {
-	case vl.Start.X <= vl.End.X && vl.Start.Y <= vl.End.Y:
-		for x := vl.Start.X; x <= vl.End.X; x++ {
-			for y := vl.Start.Y; y <= vl.End.Y; y++ {
+	x, y := vl.Start.X, vl.Start.Y
+
+	if vl.IsDiagonal() {
+		switch {
+		case vl.Start.X <= vl.End.X && vl.Start.Y <= vl.End.Y:
+			for x <= vl.End.X && y <= vl.End.Y {
 				coords = append(coords, &Coord{x, y})
+				x++
+				y++
+			}
+		case vl.Start.X <= vl.End.X && vl.End.Y <= vl.Start.Y:
+			for x <= vl.End.X && vl.End.Y <= y {
+				coords = append(coords, &Coord{x, y})
+				x++
+				y--
+			}
+		case vl.End.X <= vl.Start.X && vl.Start.Y <= vl.End.Y:
+			for vl.End.X <= x && y <= vl.End.Y {
+				coords = append(coords, &Coord{x, y})
+				x--
+				y++
+			}
+		case vl.End.X <= vl.Start.X && vl.End.Y <= vl.Start.Y:
+			for vl.End.X <= x && vl.End.Y <= y {
+				coords = append(coords, &Coord{x, y})
+				x--
+				y--
 			}
 		}
-	case vl.Start.X <= vl.End.X && vl.End.Y <= vl.Start.Y:
-		for x := vl.Start.X; x <= vl.End.X; x++ {
-			for y := vl.Start.Y; vl.End.Y <= y; y-- {
-				coords = append(coords, &Coord{x, y})
+	} else {
+		switch {
+		case vl.Start.X == vl.End.X:
+			if vl.Start.Y < vl.End.Y {
+				for y <= vl.End.Y {
+					coords = append(coords, &Coord{x, y})
+					y++
+				}
+			} else {
+				for vl.End.Y <= y {
+					coords = append(coords, &Coord{x, y})
+					y--
+				}
 			}
-		}
-	case vl.End.X <= vl.Start.X && vl.Start.Y <= vl.End.Y:
-		for x := vl.Start.X; vl.End.X <= x; x-- {
-			for y := vl.Start.Y; y <= vl.End.Y; y++ {
-				coords = append(coords, &Coord{x, y})
-			}
-		}
-	case vl.End.X <= vl.Start.X && vl.End.Y <= vl.Start.Y:
-		for x := vl.Start.X; vl.End.X <= x; x-- {
-			for y := vl.Start.Y; vl.End.Y <= y; y-- {
-				coords = append(coords, &Coord{x, y})
+		case vl.Start.Y == vl.End.Y:
+			if vl.Start.X < vl.End.X {
+				for x <= vl.End.X {
+					coords = append(coords, &Coord{x, y})
+					x++
+				}
+			} else {
+				for vl.End.X <= x {
+					coords = append(coords, &Coord{x, y})
+					x--
+				}
 			}
 		}
 	}
+
 	return coords
 }
 
@@ -110,11 +142,18 @@ type Grid struct {
 }
 
 func NewGridWithoutDiagonals(ventLines []*VentLine) *Grid {
+	return NewGrid(ventLines, true)
+}
+
+func NewGridWithDiagonals(ventLines []*VentLine) *Grid {
+	return NewGrid(ventLines, false)
+}
+
+func NewGrid(ventLines []*VentLine, skipDiagonals bool) *Grid {
 	maxX, maxY := 0, 0
 
 	for _, vl := range ventLines {
-		// skip diagonal lines for now
-		if vl.IsDiagonal() {
+		if skipDiagonals && vl.IsDiagonal() {
 			continue
 		}
 
@@ -142,8 +181,7 @@ func NewGridWithoutDiagonals(ventLines []*VentLine) *Grid {
 
 	// populate gridlines
 	for _, vl := range ventLines {
-		// skip diagonal lines for now
-		if vl.IsDiagonal() {
+		if skipDiagonals && vl.IsDiagonal() {
 			continue
 		}
 
@@ -200,7 +238,11 @@ func part1() {
 }
 
 func part2() {
-	fmt.Println("part 2: ", 0)
+	ventLines := load()
+
+	grid := NewGridWithDiagonals(ventLines)
+
+	fmt.Println("part 2: ", grid.NumOverlappingAtLeast(2))
 }
 
 func load() (ventLines []*VentLine) {
