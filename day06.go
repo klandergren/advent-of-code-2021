@@ -37,8 +37,60 @@ func (lf *LanternFish) Advance() (child *LanternFish) {
 	return child
 }
 
+func (lf *LanternFish) AllDescendantsAfter(day int, m map[string]int) int {
+	directDescendants := lf.DirectDescendantsAfter(day)
+	key := fmt.Sprintf("(%d,%d)", lf.SpawnTimer, day)
+
+	if n, ok := m[key]; ok {
+		return n
+	}
+
+	sum := 0
+	spawnDay := day
+
+	for i := 0; i < directDescendants; i++ {
+		if i == 0 {
+			spawnDay -= (lf.SpawnTimer + 1)
+		} else {
+			spawnDay -= 7
+		}
+		child := NewLanternFish(8)
+		sum = sum + 1 + child.AllDescendantsAfter(spawnDay, m)
+	}
+
+	m[key] = sum
+
+	return sum
+}
+
+func (lf *LanternFish) DirectDescendantsAfter(day int) int {
+	actualDays := day - (lf.SpawnTimer + 1)
+
+	// we cannot spawn within the amount of time
+	if actualDays < 0 {
+		return 0
+	}
+
+	// we can spawn at least once. how many direct descendants?
+	remaining := (actualDays / 7)
+	sum := 1 + remaining
+
+	return sum
+}
+
 func (lf *LanternFish) String() string {
 	return fmt.Sprintf("%d", lf.SpawnTimer)
+}
+
+func SchoolSizeAfter(day int, school []*LanternFish) int {
+	size := 0
+	m := make(map[string]int)
+
+	for _, lf := range school {
+		size = size + 1 + lf.AllDescendantsAfter(day, m)
+	}
+
+	return size
 }
 
 func part1() {
@@ -47,7 +99,6 @@ func part1() {
 	maxDays := 80
 	day := 1
 
-	//	fmt.Println("initial state: ", school)
 	for day <= maxDays {
 
 		nextGeneration := make([]*LanternFish, 0)
@@ -64,7 +115,6 @@ func part1() {
 			school = append(school, nextGeneration...)
 		}
 
-		//		fmt.Println("after ", day, ": ", school)
 		day++
 	}
 
@@ -72,7 +122,9 @@ func part1() {
 }
 
 func part2() {
-	fmt.Println("part 2: ", 0)
+	school := load()
+
+	fmt.Println("part 2: ", SchoolSizeAfter(256, school))
 }
 
 func load() (school []*LanternFish) {
