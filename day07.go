@@ -46,7 +46,7 @@ func MinMax(s []int) (min int, max int) {
 	return min, max
 }
 
-func FuelCost(positions []int, alignmentPosition int) int {
+func FuelCostPartOne(positions []int, alignmentPosition int) int {
 	if positions == nil {
 		log.Fatal("nil slice")
 	}
@@ -78,13 +78,69 @@ func FuelCost(positions []int, alignmentPosition int) int {
 	return cost
 }
 
-func FindMinFuelCostPositionBrute(positions []int) int {
+func FuelCostPartTwo(positions []int, alignmentPosition int) int {
+	if positions == nil {
+		log.Fatal("nil slice")
+	}
+
+	if len(positions) == 0 {
+		log.Fatal("empty slice")
+	}
+
 	min, max := MinMax(positions)
 
-	minFuelCost := FuelCost(positions, min)
+	if alignmentPosition < min {
+		log.Fatal("too low")
+	}
+
+	if max < alignmentPosition {
+		log.Fatal("too high")
+	}
+
+	cost := 0
+
+	for _, p := range positions {
+		if p <= alignmentPosition {
+			cost = cost + FuelCostToMove(alignmentPosition-p)
+		} else {
+			cost = cost + FuelCostToMove(p-alignmentPosition)
+		}
+	}
+
+	return cost
+}
+
+func FuelCostToMove(numPositions int) int {
+	cost := 0
+	for i := 1; i <= numPositions; i++ {
+		cost = cost + i
+	}
+
+	return cost
+}
+
+func FindMinFuelCostPositionPartTwoBrute(positions []int) int {
+	min, max := MinMax(positions)
+
+	minFuelCost := FuelCostPartTwo(positions, min)
 
 	for i := min + 1; i <= max; i++ {
-		maybeMinFuelCost := FuelCost(positions, i)
+		maybeMinFuelCost := FuelCostPartTwo(positions, i)
+		if maybeMinFuelCost < minFuelCost {
+			minFuelCost = maybeMinFuelCost
+		}
+	}
+
+	return minFuelCost
+}
+
+func FindMinFuelCostPositionPartOneBrute(positions []int) int {
+	min, max := MinMax(positions)
+
+	minFuelCost := FuelCostPartOne(positions, min)
+
+	for i := min + 1; i <= max; i++ {
+		maybeMinFuelCost := FuelCostPartOne(positions, i)
 		if maybeMinFuelCost < minFuelCost {
 			minFuelCost = maybeMinFuelCost
 		}
@@ -94,11 +150,11 @@ func FindMinFuelCostPositionBrute(positions []int) int {
 }
 
 func part1() {
-	fmt.Println("part 1: ", FindMinFuelCostPositionBrute(load()))
+	fmt.Println("part 1: ", FindMinFuelCostPositionPartOneBrute(load()))
 }
 
 func part2() {
-	fmt.Println("part 2: ", 0)
+	fmt.Println("part 2: ", FindMinFuelCostPositionPartTwoBrute(load()))
 }
 
 func load() (horizontalPositions []int) {
