@@ -1,7 +1,8 @@
-package main
+package day08
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -11,11 +12,11 @@ import (
 	"strings"
 )
 
-func main() {
-	partOne()
-	partTwo()
-
-	fmt.Println("done")
+func PartOne(reader *bufio.Reader) (int, error) {
+	return -1, errors.New("not implemented yet")
+}
+func PartTwo(reader *bufio.Reader) (int, error) {
+	return -1, errors.New("not implemented yet")
 }
 
 var SignalValueLookup = map[string]int{

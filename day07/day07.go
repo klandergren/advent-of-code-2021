@@ -1,7 +1,8 @@
-package main
+package day07
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -10,11 +11,11 @@ import (
 	"strings"
 )
 
-func main() {
-	part1()
-	part2()
-
-	fmt.Println("done")
+func PartOne(reader *bufio.Reader) (int, error) {
+	return -1, errors.New("not implemented yet")
+}
+func PartTwo(reader *bufio.Reader) (int, error) {
+	return -1, errors.New("not implemented yet")
 }
 
 func MinMax(s []int) (min int, max int) {

@@ -1,8 +1,9 @@
-package main
+package day04
 
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,11 +11,11 @@ import (
 	"strings"
 )
 
-func main() {
-	part1()
-	part2()
-
-	fmt.Println("done")
+func PartOne(reader *bufio.Reader) (int, error) {
+	return -1, errors.New("not implemented yet")
+}
+func PartTwo(reader *bufio.Reader) (int, error) {
+	return -1, errors.New("not implemented yet")
 }
 
 // cribbed from ScanLines implementation
