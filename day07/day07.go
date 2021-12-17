@@ -1,15 +1,21 @@
 package day07
 
 import (
-	"bufio"
 	"errors"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
-	horizontalPositions, err := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	horizontalPositions, err := createHorizonalPositions(lines)
 	if err != nil {
 		return -1, err
 	}
@@ -21,8 +27,14 @@ func PartOne(reader io.Reader) (int, error) {
 
 	return minFuelCost, nil
 }
+
 func PartTwo(reader io.Reader) (int, error) {
-	horizontalPositions, err := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	horizontalPositions, err := createHorizonalPositions(lines)
 	if err != nil {
 		return -1, err
 	}
@@ -191,17 +203,9 @@ func FindMinFuelCostPositionPartOneBrute(positions []int) (int, error) {
 	return minFuelCost, nil
 }
 
-func load(reader io.Reader) (horizontalPositions []int, err error) {
-	bReader := bufio.NewReader(reader)
-
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		for _, sPos := range strings.Split(string(line), ",") {
+func createHorizonalPositions(lines []string) (horizontalPositions []int, err error) {
+	for _, line := range lines {
+		for _, sPos := range strings.Split(line, ",") {
 			pos, err := strconv.Atoi(sPos)
 
 			if err != nil {
