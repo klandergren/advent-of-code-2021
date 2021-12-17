@@ -1,41 +1,34 @@
 package day02
 
 import (
-	"bufio"
 	"io"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
 	sub := Submarine{0, 0, 0}
-
-	bReader := bufio.NewReader(reader)
-
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		sub.AdvanceWithoutAim(string(line))
+	for _, line := range lines {
+		sub.AdvanceWithoutAim(line)
 	}
 
 	return sub.Mult(), nil
 }
 
 func PartTwo(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
 	sub := Submarine{0, 0, 0}
-
-	bReader := bufio.NewReader(reader)
-
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		sub.AdvanceWithAim(string(line))
+	for _, line := range lines {
+		sub.AdvanceWithAim(line)
 	}
 
 	return sub.Mult(), nil
