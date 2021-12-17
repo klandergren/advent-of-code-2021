@@ -1,27 +1,26 @@
 package day01
 
 import (
-	"bufio"
 	"io"
 	"math"
 	"strconv"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
 	prev_depth := math.MaxInt64
-
 	c := 0
-
-	bReader := bufio.NewReader(reader)
-
-	for {
-		l, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
+	for _, line := range lines {
+		depth, err := strconv.Atoi(line)
+		if err != nil {
+			return -1, err
 		}
-
-		depth, _ := strconv.Atoi(string(l))
 
 		if prev_depth < depth {
 			c++
@@ -34,21 +33,19 @@ func PartOne(reader io.Reader) (int, error) {
 }
 
 func PartTwo(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
 	prev_window := math.MaxInt64
 	depths := make([]int, 0)
-
 	c := 0
-
-	bReader := bufio.NewReader(reader)
-
-	for {
-		l, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
+	for _, line := range lines {
+		depth, err := strconv.Atoi(line)
+		if err != nil {
+			return -1, err
 		}
-
-		depth, _ := strconv.Atoi(string(l))
 
 		depths = append(depths, depth)
 
