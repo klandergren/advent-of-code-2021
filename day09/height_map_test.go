@@ -10,44 +10,6 @@ var testLines = []string{
 	"9899965678",
 }
 
-func Test_Get(t *testing.T) {
-	hm, err := NewHeightMap(testLines)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	conditions := []struct{ x, y, h int }{
-		{0, 0, 2},
-		{1, 0, 1},
-		{2, 0, 9},
-		{3, 0, 9},
-		{4, 0, 9},
-		{5, 0, 4},
-		{6, 0, 3},
-		{7, 0, 2},
-		{8, 0, 1},
-		{9, 0, 0},
-		{0, 4, 9},
-		{1, 4, 8},
-		{2, 4, 9},
-		{3, 4, 9},
-		{4, 4, 9},
-		{5, 4, 6},
-		{6, 4, 5},
-		{7, 4, 6},
-		{8, 4, 7},
-		{9, 4, 8},
-	}
-
-	for _, c := range conditions {
-		if h := hm.Get(c.x, c.y); int(*h) != c.h {
-			t.Errorf("(%d,%d) should be %d, got: %d", c.x, c.y, c.h, int(*h))
-		}
-	}
-
-}
-
 func Test_AdjacentHeights_00(t *testing.T) {
 	hm, err := NewHeightMap(testLines)
 
@@ -154,5 +116,19 @@ func Test_SumRisk(t *testing.T) {
 
 	if sumRisk != 15 {
 		t.Errorf("sum risk for test height map should be 15, got: %d", sumRisk)
+	}
+}
+
+func Test_BasinSizes(t *testing.T) {
+	hm, err := NewHeightMap(testLines)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	bs := hm.BasinSizes()
+
+	if len(bs) != 4 {
+		t.Errorf("basin sizes length should be 4, got: %d", len(bs))
 	}
 }

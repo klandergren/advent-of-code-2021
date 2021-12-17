@@ -1,8 +1,8 @@
 package day09
 
 import (
-	"errors"
 	"io"
+	"sort"
 
 	"github.com/klandergren/advent-of-code-2021/util"
 )
@@ -22,5 +22,24 @@ func PartOne(reader io.Reader) (int, error) {
 }
 
 func PartTwo(reader io.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	hm, err := NewHeightMap(lines)
+	if err != nil {
+		return -1, err
+	}
+
+	bs := hm.BasinSizes()
+
+	sort.Sort(sort.Reverse(sort.IntSlice(bs)))
+
+	product := 1
+	for i := 0; i < 3; i++ {
+		product *= bs[i]
+	}
+
+	return product, nil
 }

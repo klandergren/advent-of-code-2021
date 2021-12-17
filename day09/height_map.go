@@ -31,7 +31,44 @@ func (hm HeightMap) SumRisk() (sumRisk int) {
 	return sumRisk
 }
 
-func (hm HeightMap) LowPointHeights() (pts []Height) {
+func (hm HeightMap) BasinSizes() (basinSizes []int) {
+	for _, c := range hm.LowPointCoordinates() {
+		visited := make(map[string]bool)
+		size := hm.WalkAllAdjacent(c, visited)
+
+		basinSizes = append(basinSizes, size)
+	}
+
+	return basinSizes
+}
+
+func (hm HeightMap) WalkAllAdjacent(c Coordinate, visited map[string]bool) int {
+	if _, ok := visited[c.String()]; ok {
+		return 0
+	}
+
+	if h := hm[c.Y][c.X]; h == 9 {
+		return 0
+	}
+
+	sum := 1
+	visited[c.String()] = true
+
+	for _, ac := range hm.AdjacentCoordinates(c.X, c.Y) {
+		sum += hm.WalkAllAdjacent(ac, visited)
+	}
+
+	return sum
+}
+
+func (hm HeightMap) LowPointHeights() (lphts []Height) {
+	for _, c := range hm.LowPointCoordinates() {
+		lphts = append(lphts, hm[c.Y][c.X])
+	}
+	return lphts
+}
+
+func (hm HeightMap) LowPointCoordinates() (lpc []Coordinate) {
 	for y, row := range hm {
 		for x, h := range row {
 			isLowPoint := true
@@ -39,40 +76,40 @@ func (hm HeightMap) LowPointHeights() (pts []Height) {
 				isLowPoint = isLowPoint && (h < ah)
 			}
 			if isLowPoint {
-				pts = append(pts, h)
+				lpc = append(lpc, Coordinate{x, y})
 			}
 		}
 	}
-
-	return pts
+	return lpc
 }
 
-func (hm HeightMap) AdjacentHeights(x, y int) (adjacentPoints []Height) {
-	c := &Coordinate{x, y}
+func (hm HeightMap) AdjacentHeights(x, y int) (adjacentHeights []Height) {
+	for _, ac := range hm.AdjacentCoordinates(x, y) {
+		adjacentHeights = append(adjacentHeights, hm[ac.Y][ac.X])
+	}
+	return adjacentHeights
+}
+
+func (hm HeightMap) AdjacentCoordinates(x, y int) (adjacentCoordinates []Coordinate) {
+	c := Coordinate{x, y}
 	for _, ac := range c.AdjacentCoordinates() {
-		if h := hm.Get(ac.X, ac.Y); h != nil {
-			adjacentPoints = append(adjacentPoints, *h)
+		if ac.Y < 0 {
+			continue
 		}
-	}
-	return adjacentPoints
-}
 
-func (hm HeightMap) Get(x, y int) *Height {
-	if y < 0 {
-		return nil
-	}
+		if len(hm) <= ac.Y {
+			continue
+		}
 
-	if len(hm) <= y {
-		return nil
-	}
+		if ac.X < 0 {
+			continue
+		}
 
-	if x < 0 {
-		return nil
-	}
+		if len(hm[ac.Y]) <= ac.X {
+			continue
+		}
 
-	if len(hm[y]) <= x {
-		return nil
+		adjacentCoordinates = append(adjacentCoordinates, *ac)
 	}
-
-	return &hm[y][x]
+	return adjacentCoordinates
 }

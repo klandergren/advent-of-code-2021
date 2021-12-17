@@ -26,3 +26,18 @@ func Test_PartOne(t *testing.T) {
 	}
 
 }
+
+func Test_PartTwo(t *testing.T) {
+	reader := strings.NewReader(testInput)
+
+	product, err := PartTwo(reader)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if product != 1134 {
+		t.Errorf("product for basin sizes should be 1134, got: %d", product)
+	}
+
+}
