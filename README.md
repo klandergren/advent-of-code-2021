@@ -13,12 +13,12 @@ $ go run hohoho.go -h
 
 run day 1, part 1:
 ```
-$ go run hohoho.go -day 1 -part 1 -inputFilePath testdata/day01.txt
+$ go run hohoho.go -day 1 -part 1 -inputFilePath input-data/day01.txt
 ```
 
 run day 1, both parts:
 ```
-$ go run hohoho.go -day 1 -inputFilePath testdata/day01.txt
+$ go run hohoho.go -day 1 -inputFilePath input-data/day01.txt
 ```
 
 ## Testing
