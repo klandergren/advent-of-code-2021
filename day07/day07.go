@@ -3,28 +3,45 @@ package day07
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
-	"log"
-	"os"
 	"strconv"
 	"strings"
 )
 
 func PartOne(reader *bufio.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
+	horizontalPositions, err := load(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	minFuelCost, err := FindMinFuelCostPositionPartOneBrute(horizontalPositions)
+	if err != nil {
+		return -1, err
+	}
+
+	return minFuelCost, nil
 }
 func PartTwo(reader *bufio.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
+	horizontalPositions, err := load(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	minFuelCost, err := FindMinFuelCostPositionPartTwoBrute(horizontalPositions)
+	if err != nil {
+		return -1, err
+	}
+
+	return minFuelCost, nil
 }
 
-func MinMax(s []int) (min int, max int) {
+func MinMax(s []int) (min int, max int, err error) {
 	if s == nil {
-		log.Fatal("nil slice")
+		return -1, -1, errors.New("nil slice")
 	}
 
 	if len(s) == 0 {
-		log.Fatal("empty slice")
+		return -1, -1, errors.New("empty slice")
 	}
 
 	min = s[0]
@@ -44,26 +61,29 @@ func MinMax(s []int) (min int, max int) {
 
 	}
 
-	return min, max
+	return min, max, nil
 }
 
-func FuelCostPartOne(positions []int, alignmentPosition int) int {
+func FuelCostPartOne(positions []int, alignmentPosition int) (int, error) {
 	if positions == nil {
-		log.Fatal("nil slice")
+		return -1, errors.New("nil slice")
 	}
 
 	if len(positions) == 0 {
-		log.Fatal("empty slice")
+		return -1, errors.New("empty slice")
 	}
 
-	min, max := MinMax(positions)
+	min, max, err := MinMax(positions)
+	if err != nil {
+		return -1, err
+	}
 
 	if alignmentPosition < min {
-		log.Fatal("too low")
+		return -1, errors.New("alignment position too low")
 	}
 
 	if max < alignmentPosition {
-		log.Fatal("too high")
+		return -1, errors.New("alignment position too low")
 	}
 
 	cost := 0
@@ -76,26 +96,29 @@ func FuelCostPartOne(positions []int, alignmentPosition int) int {
 		}
 	}
 
-	return cost
+	return cost, nil
 }
 
-func FuelCostPartTwo(positions []int, alignmentPosition int) int {
+func FuelCostPartTwo(positions []int, alignmentPosition int) (int, error) {
 	if positions == nil {
-		log.Fatal("nil slice")
+		return -1, errors.New("nil slice")
 	}
 
 	if len(positions) == 0 {
-		log.Fatal("empty slice")
+		return -1, errors.New("empty slice")
 	}
 
-	min, max := MinMax(positions)
+	min, max, err := MinMax(positions)
+	if err != nil {
+		return -1, err
+	}
 
 	if alignmentPosition < min {
-		log.Fatal("too low")
+		return -1, errors.New("alignment position too low")
 	}
 
 	if max < alignmentPosition {
-		log.Fatal("too high")
+		return -1, errors.New("alignment position too low")
 	}
 
 	cost := 0
@@ -108,7 +131,7 @@ func FuelCostPartTwo(positions []int, alignmentPosition int) int {
 		}
 	}
 
-	return cost
+	return cost, nil
 }
 
 func FuelCostToMove(numPositions int) int {
@@ -120,58 +143,57 @@ func FuelCostToMove(numPositions int) int {
 	return cost
 }
 
-func FindMinFuelCostPositionPartTwoBrute(positions []int) int {
-	min, max := MinMax(positions)
-
-	minFuelCost := FuelCostPartTwo(positions, min)
-
-	for i := min + 1; i <= max; i++ {
-		maybeMinFuelCost := FuelCostPartTwo(positions, i)
-		if maybeMinFuelCost < minFuelCost {
-			minFuelCost = maybeMinFuelCost
-		}
-	}
-
-	return minFuelCost
-}
-
-func FindMinFuelCostPositionPartOneBrute(positions []int) int {
-	min, max := MinMax(positions)
-
-	minFuelCost := FuelCostPartOne(positions, min)
-
-	for i := min + 1; i <= max; i++ {
-		maybeMinFuelCost := FuelCostPartOne(positions, i)
-		if maybeMinFuelCost < minFuelCost {
-			minFuelCost = maybeMinFuelCost
-		}
-	}
-
-	return minFuelCost
-}
-
-func part1() {
-	fmt.Println("part 1: ", FindMinFuelCostPositionPartOneBrute(load()))
-}
-
-func part2() {
-	fmt.Println("part 2: ", FindMinFuelCostPositionPartTwoBrute(load()))
-}
-
-func load() (horizontalPositions []int) {
-	//file, err := os.Open("./test-data/day07.txt")
-	file, err := os.Open("./input-data/day07.txt")
-
+func FindMinFuelCostPositionPartTwoBrute(positions []int) (int, error) {
+	min, max, err := MinMax(positions)
 	if err != nil {
-		log.Fatal(err)
+		return -1, err
 	}
 
-	defer file.Close()
+	minFuelCost, err := FuelCostPartTwo(positions, min)
+	if err != nil {
+		return -1, err
+	}
 
-	r := bufio.NewReader(file)
+	for i := min + 1; i <= max; i++ {
+		maybeMinFuelCost, err := FuelCostPartTwo(positions, i)
+		if err != nil {
+			return -1, err
+		}
+		if maybeMinFuelCost < minFuelCost {
+			minFuelCost = maybeMinFuelCost
+		}
+	}
 
+	return minFuelCost, nil
+}
+
+func FindMinFuelCostPositionPartOneBrute(positions []int) (int, error) {
+	min, max, err := MinMax(positions)
+	if err != nil {
+		return -1, err
+	}
+
+	minFuelCost, err := FuelCostPartOne(positions, min)
+	if err != nil {
+		return -1, err
+	}
+
+	for i := min + 1; i <= max; i++ {
+		maybeMinFuelCost, err := FuelCostPartOne(positions, i)
+		if err != nil {
+			return -1, err
+		}
+		if maybeMinFuelCost < minFuelCost {
+			minFuelCost = maybeMinFuelCost
+		}
+	}
+
+	return minFuelCost, nil
+}
+
+func load(reader *bufio.Reader) (horizontalPositions []int, err error) {
 	for {
-		line, _, err := r.ReadLine()
+		line, _, err := reader.ReadLine()
 
 		if err == io.EOF {
 			break
@@ -181,7 +203,7 @@ func load() (horizontalPositions []int) {
 			pos, err := strconv.Atoi(sPos)
 
 			if err != nil {
-				log.Fatal(err)
+				return nil, err
 			}
 
 			horizontalPositions = append(horizontalPositions, pos)
@@ -189,5 +211,5 @@ func load() (horizontalPositions []int) {
 
 	}
 
-	return horizontalPositions
+	return horizontalPositions, nil
 }
