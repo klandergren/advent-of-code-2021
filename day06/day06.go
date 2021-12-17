@@ -2,100 +2,17 @@ package day06
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
 	"io"
-	"log"
-	"os"
 	"strconv"
 	"strings"
 )
 
 func PartOne(reader *bufio.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
-}
-func PartTwo(reader *bufio.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
-}
+	school, err := load(reader)
 
-type LanternFish struct {
-	SpawnTimer int
-}
-
-func NewLanternFish(st int) (lf *LanternFish) {
-	return &LanternFish{
-		SpawnTimer: st,
+	if err != nil {
+		return -1, err
 	}
-}
-
-func (lf *LanternFish) Advance() (child *LanternFish) {
-	if lf.SpawnTimer == 0 {
-		child = NewLanternFish(8)
-		lf.SpawnTimer = 6
-	} else {
-		lf.SpawnTimer--
-	}
-	return child
-}
-
-func (lf *LanternFish) AllDescendantsAfter(day int, m map[string]int) int {
-	directDescendants := lf.DirectDescendantsAfter(day)
-	key := fmt.Sprintf("(%d,%d)", lf.SpawnTimer, day)
-
-	if n, ok := m[key]; ok {
-		return n
-	}
-
-	sum := 0
-	spawnDay := day
-
-	for i := 0; i < directDescendants; i++ {
-		if i == 0 {
-			spawnDay -= (lf.SpawnTimer + 1)
-		} else {
-			spawnDay -= 7
-		}
-		child := NewLanternFish(8)
-		sum = sum + 1 + child.AllDescendantsAfter(spawnDay, m)
-	}
-
-	m[key] = sum
-
-	return sum
-}
-
-func (lf *LanternFish) DirectDescendantsAfter(day int) int {
-	actualDays := day - (lf.SpawnTimer + 1)
-
-	// we cannot spawn within the amount of time
-	if actualDays < 0 {
-		return 0
-	}
-
-	// we can spawn at least once. how many direct descendants?
-	remaining := (actualDays / 7)
-	sum := 1 + remaining
-
-	return sum
-}
-
-func (lf *LanternFish) String() string {
-	return fmt.Sprintf("%d", lf.SpawnTimer)
-}
-
-func SchoolSizeAfter(day int, school []*LanternFish) int {
-	size := 0
-	m := make(map[string]int)
-
-	for _, lf := range school {
-		size = size + 1 + lf.AllDescendantsAfter(day, m)
-	}
-
-	return size
-}
-
-func part1() {
-	school := load()
 
 	maxDays := 80
 	day := 1
@@ -119,30 +36,33 @@ func part1() {
 		day++
 	}
 
-	fmt.Println("part 1: ", len(school))
+	return len(school), nil
 }
-
-func part2() {
-	school := load()
-
-	fmt.Println("part 2: ", SchoolSizeAfter(256, school))
-}
-
-func load() (school []*LanternFish) {
-	//file, err := os.Open("./test-data/day06.txt")
-	file, err := os.Open("./input-data/day06.txt")
+func PartTwo(reader *bufio.Reader) (int, error) {
+	school, err := load(reader)
 
 	if err != nil {
-		log.Fatal(err)
+		return -1, err
 	}
 
-	defer file.Close()
+	return SchoolSizeAfter(256, school), nil
+}
 
-	r := bufio.NewReader(file)
+func SchoolSizeAfter(day int, school []*LanternFish) int {
+	size := 0
+	m := make(map[string]int)
 
+	for _, lf := range school {
+		size = size + 1 + lf.AllDescendantsAfter(day, m)
+	}
+
+	return size
+}
+
+func load(reader *bufio.Reader) (school []*LanternFish, err error) {
 	school = make([]*LanternFish, 0)
 	for {
-		line, _, err := r.ReadLine()
+		line, _, err := reader.ReadLine()
 
 		if err == io.EOF {
 			break
@@ -154,7 +74,7 @@ func load() (school []*LanternFish) {
 			st, err := strconv.Atoi(spawnTimer)
 
 			if err != nil {
-				log.Fatal(err)
+				return nil, err
 			}
 
 			school = append(school, NewLanternFish(st))
@@ -162,5 +82,5 @@ func load() (school []*LanternFish) {
 
 	}
 
-	return school
+	return school, nil
 }
