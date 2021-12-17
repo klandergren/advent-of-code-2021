@@ -1,38 +1,20 @@
-package main
+package day03
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 )
 
-func main() {
-	part1()
-	part2()
-
-	fmt.Println("done")
-}
-
-func part1() {
-	//file, err := os.Open("./test-data/day03.txt")
-	file, err := os.Open("./input-data/day03.txt")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer file.Close()
-
-	r := bufio.NewReader(file)
-
+func PartOne(reader *bufio.Reader) (int, error) {
 	grid := make([][]int, 0)
 
 	for {
-		line, _, err := r.ReadLine()
+		line, _, err := reader.ReadLine()
 
 		if err == io.EOF {
 			break
@@ -73,14 +55,14 @@ func part1() {
 		} else if zerosCount < onesCount {
 			gammaRaw[x] = "1"
 		} else {
-			log.Fatal("equal?")
+			return -1, errors.New("equal?")
 		}
 	}
 
 	gamma, err := strconv.ParseInt(strings.Join(gammaRaw, ""), 2, 64)
 
 	if err != nil {
-		log.Fatal(err)
+		return -1, err
 	}
 
 	epsilonRaw := make([]string, len(grid))
@@ -95,32 +77,27 @@ func part1() {
 
 	epsilon, err := strconv.ParseInt(strings.Join(epsilonRaw, ""), 2, 64)
 
-	consumption := gamma * epsilon
-
-	fmt.Println("part 1: ", consumption)
-}
-
-func part2() {
-	//	file, err := os.Open("./test-data/day03.txt")
-	file, err := os.Open("./input-data/day03.txt")
-
 	if err != nil {
-		log.Fatal(err)
+		return -1, err
 	}
 
-	defer file.Close()
+	consumption := gamma * epsilon
 
-	r := bufio.NewReader(file)
+	return int(consumption), nil
+}
 
+func PartTwo(reader *bufio.Reader) (int, error) {
 	gridXY := make([][]int, 0)
 	gridYX := make([][]int, 0)
 
 	y := 0
 	for {
-		line, _, err := r.ReadLine()
+		line, _, err := reader.ReadLine()
 
 		if err == io.EOF {
 			break
+		} else if err != nil {
+			return -1, err
 		}
 
 		if len(gridYX) <= y {
@@ -131,7 +108,7 @@ func part2() {
 			bit, err := strconv.Atoi(string(rune))
 
 			if err != nil {
-				log.Fatal(err)
+				return -1, err
 			}
 
 			if len(gridXY) <= x {
@@ -146,10 +123,8 @@ func part2() {
 
 	oxy := findOxygen(gridYX)
 	co2 := findCO2(gridYX)
-	fmt.Println("oxy: ", oxy)
-	fmt.Println("co2: ", co2)
 
-	fmt.Println("part 2: ", oxy*co2)
+	return oxy * co2, nil
 }
 
 func findOxygen(gridYX [][]int) int {
