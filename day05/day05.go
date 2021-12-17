@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	ventLines := load(reader)
 
 	grid := NewGridWithoutDiagonals(ventLines)
 
 	return grid.NumOverlappingAtLeast(2), nil
 }
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	ventLines := load(reader)
 
 	grid := NewGridWithDiagonals(ventLines)
@@ -22,10 +22,11 @@ func PartTwo(reader *bufio.Reader) (int, error) {
 	return grid.NumOverlappingAtLeast(2), nil
 }
 
-func load(reader *bufio.Reader) (ventLines []*VentLine) {
+func load(reader io.Reader) (ventLines []*VentLine) {
+	bReader := bufio.NewReader(reader)
 	ventLines = make([]*VentLine, 0)
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break

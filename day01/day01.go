@@ -7,13 +7,15 @@ import (
 	"strconv"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	prev_depth := math.MaxInt64
 
 	c := 0
 
+	bReader := bufio.NewReader(reader)
+
 	for {
-		l, _, err := reader.ReadLine()
+		l, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break
@@ -31,14 +33,16 @@ func PartOne(reader *bufio.Reader) (int, error) {
 	return c, nil
 }
 
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	prev_window := math.MaxInt64
 	depths := make([]int, 0)
 
 	c := 0
 
+	bReader := bufio.NewReader(reader)
+
 	for {
-		l, _, err := reader.ReadLine()
+		l, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break

@@ -5,11 +5,13 @@ import (
 	"io"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	sub := Submarine{0, 0, 0}
 
+	bReader := bufio.NewReader(reader)
+
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break
@@ -21,11 +23,13 @@ func PartOne(reader *bufio.Reader) (int, error) {
 	return sub.Mult(), nil
 }
 
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	sub := Submarine{0, 0, 0}
 
+	bReader := bufio.NewReader(reader)
+
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break

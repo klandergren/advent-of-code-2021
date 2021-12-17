@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	readings, err := load(reader)
 	if err != nil {
 		return -1, err
@@ -34,7 +34,7 @@ func PartOne(reader *bufio.Reader) (int, error) {
 	return count1478, nil
 }
 
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	readings, err := load(reader)
 	if err != nil {
 		return -1, err
@@ -158,9 +158,11 @@ func Transform(outputSignals []string, transform map[string]string) (transformed
 	return transformedSignals
 }
 
-func load(reader *bufio.Reader) (readings []*Reading, err error) {
+func load(reader io.Reader) (readings []*Reading, err error) {
+	bReader := bufio.NewReader(reader)
+
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	school, err := load(reader)
 
 	if err != nil {
@@ -38,7 +38,7 @@ func PartOne(reader *bufio.Reader) (int, error) {
 
 	return len(school), nil
 }
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	school, err := load(reader)
 
 	if err != nil {
@@ -59,10 +59,12 @@ func SchoolSizeAfter(day int, school []*LanternFish) int {
 	return size
 }
 
-func load(reader *bufio.Reader) (school []*LanternFish, err error) {
+func load(reader io.Reader) (school []*LanternFish, err error) {
+	bReader := bufio.NewReader(reader)
+
 	school = make([]*LanternFish, 0)
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break

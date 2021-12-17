@@ -3,11 +3,12 @@ package day04
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"strconv"
 	"strings"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	game, boards, err := load(reader)
 	if err != nil {
 		return -1, err
@@ -18,7 +19,7 @@ func PartOne(reader *bufio.Reader) (int, error) {
 	return winningScore, nil
 }
 
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	game, boards, err := load(reader)
 	if err != nil {
 		return -1, err
@@ -77,7 +78,7 @@ func ScanEmptyLines(data []byte, atEOF bool) (advance int, token []byte, err err
 	return 0, nil, nil
 }
 
-func load(reader *bufio.Reader) (game []int, boards []*BingoBoard, err error) {
+func load(reader io.Reader) (game []int, boards []*BingoBoard, err error) {
 	s := bufio.NewScanner(reader)
 	s.Split(ScanEmptyLines)
 
