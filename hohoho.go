@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/klandergren/advent-of-code-2021/day01"
@@ -29,33 +30,28 @@ func main() {
 	inputFilePath := *inputFilePathFlag
 
 	if err := validateDay(day); err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		log.Fatalln("error:", err)
 	}
 
 	if err := validatePart(part); err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		log.Fatalln("error:", err)
 	}
 
 	if err := validateInputFilePath(inputFilePath); err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		log.Fatalln("error:", err)
 	}
 
 	if part == -1 {
 		for _, p := range []int{1, 2} {
 			err := loadFileAndRun(inputFilePath, day, p)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, "error:", err)
-				os.Exit(1)
+				log.Fatalln("error:", err)
 			}
 		}
 	} else {
 		err := loadFileAndRun(inputFilePath, day, part)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "error:", err)
-			os.Exit(1)
+			log.Fatalln("error:", err)
 		}
 	}
 
