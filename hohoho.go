@@ -16,6 +16,7 @@ import (
 	"github.com/klandergren/advent-of-code-2021/day06"
 	"github.com/klandergren/advent-of-code-2021/day07"
 	"github.com/klandergren/advent-of-code-2021/day08"
+	"github.com/klandergren/advent-of-code-2021/day09"
 )
 
 var dayFlag = flag.Int("day", 1, "[1-25] the day number to run, without leading 0")
@@ -158,6 +159,13 @@ func run(day int, part int, reader *bufio.Reader) (result int, err error) {
 			return day08.PartOne(reader)
 		case 2:
 			return day08.PartTwo(reader)
+		}
+	case 9:
+		switch part {
+		case 1:
+			return day09.PartOne(reader)
+		case 2:
+			return day09.PartTwo(reader)
 		}
 	}
 
