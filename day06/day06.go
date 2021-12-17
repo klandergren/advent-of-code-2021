@@ -1,15 +1,20 @@
 package day06
 
 import (
-	"bufio"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
-	school, err := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
 
+	school, err := createSchool(lines)
 	if err != nil {
 		return -1, err
 	}
@@ -39,8 +44,12 @@ func PartOne(reader io.Reader) (int, error) {
 	return len(school), nil
 }
 func PartTwo(reader io.Reader) (int, error) {
-	school, err := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
 
+	school, err := createSchool(lines)
 	if err != nil {
 		return -1, err
 	}
@@ -59,18 +68,10 @@ func SchoolSizeAfter(day int, school []*LanternFish) int {
 	return size
 }
 
-func load(reader io.Reader) (school []*LanternFish, err error) {
-	bReader := bufio.NewReader(reader)
-
+func createSchool(lines []string) (school []*LanternFish, err error) {
 	school = make([]*LanternFish, 0)
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		spawnTimers := strings.Split(string(line), ",")
+	for _, line := range lines {
+		spawnTimers := strings.Split(line, ",")
 
 		for _, spawnTimer := range spawnTimers {
 			st, err := strconv.Atoi(spawnTimer)
