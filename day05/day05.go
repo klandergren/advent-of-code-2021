@@ -2,265 +2,30 @@ package day05
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
 	"io"
-	"log"
-	"os"
 	"strconv"
 	"strings"
 )
 
 func PartOne(reader *bufio.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
-}
-func PartTwo(reader *bufio.Reader) (int, error) {
-	return -1, errors.New("not implemented yet")
-}
-
-type Reading struct {
-	NumVents int
-}
-
-func (r *Reading) Inc() {
-	r.NumVents++
-}
-
-// assumes 4 digit max
-func (r *Reading) String() string {
-	switch {
-	case r.NumVents == 0:
-		return "   . "
-	default:
-		return fmt.Sprintf("%4d ", r.NumVents)
-	}
-}
-
-type Coord struct {
-	X, Y int
-}
-
-func (c *Coord) String() string {
-	return fmt.Sprintf("%d,%d", c.X, c.Y)
-}
-
-type VentLine struct {
-	Start, End *Coord
-}
-
-func (vl *VentLine) IsDiagonal() bool {
-	return vl.Start.X != vl.End.X && vl.Start.Y != vl.End.Y
-}
-
-func (vl *VentLine) MaxX() int {
-	if vl.Start.X < vl.End.X {
-		return vl.End.X
-	} else {
-		return vl.Start.X
-	}
-}
-
-func (vl *VentLine) MaxY() int {
-	if vl.Start.Y < vl.End.Y {
-		return vl.End.Y
-	} else {
-		return vl.Start.Y
-	}
-}
-
-// assume lines only cross whole int coordinates
-func (vl *VentLine) Coords() []*Coord {
-	coords := make([]*Coord, 0)
-
-	x, y := vl.Start.X, vl.Start.Y
-
-	if vl.IsDiagonal() {
-		switch {
-		case vl.Start.X <= vl.End.X && vl.Start.Y <= vl.End.Y:
-			for x <= vl.End.X && y <= vl.End.Y {
-				coords = append(coords, &Coord{x, y})
-				x++
-				y++
-			}
-		case vl.Start.X <= vl.End.X && vl.End.Y <= vl.Start.Y:
-			for x <= vl.End.X && vl.End.Y <= y {
-				coords = append(coords, &Coord{x, y})
-				x++
-				y--
-			}
-		case vl.End.X <= vl.Start.X && vl.Start.Y <= vl.End.Y:
-			for vl.End.X <= x && y <= vl.End.Y {
-				coords = append(coords, &Coord{x, y})
-				x--
-				y++
-			}
-		case vl.End.X <= vl.Start.X && vl.End.Y <= vl.Start.Y:
-			for vl.End.X <= x && vl.End.Y <= y {
-				coords = append(coords, &Coord{x, y})
-				x--
-				y--
-			}
-		}
-	} else {
-		switch {
-		case vl.Start.X == vl.End.X:
-			if vl.Start.Y < vl.End.Y {
-				for y <= vl.End.Y {
-					coords = append(coords, &Coord{x, y})
-					y++
-				}
-			} else {
-				for vl.End.Y <= y {
-					coords = append(coords, &Coord{x, y})
-					y--
-				}
-			}
-		case vl.Start.Y == vl.End.Y:
-			if vl.Start.X < vl.End.X {
-				for x <= vl.End.X {
-					coords = append(coords, &Coord{x, y})
-					x++
-				}
-			} else {
-				for vl.End.X <= x {
-					coords = append(coords, &Coord{x, y})
-					x--
-				}
-			}
-		}
-	}
-
-	return coords
-}
-
-func (vl *VentLine) String() string {
-	return fmt.Sprintf("%s -> %s", vl.Start, vl.End)
-}
-
-type Grid struct {
-	MaxX, MaxY int
-	ReadingsYX [][]*Reading
-}
-
-func NewGridWithoutDiagonals(ventLines []*VentLine) *Grid {
-	return NewGrid(ventLines, true)
-}
-
-func NewGridWithDiagonals(ventLines []*VentLine) *Grid {
-	return NewGrid(ventLines, false)
-}
-
-func NewGrid(ventLines []*VentLine, skipDiagonals bool) *Grid {
-	maxX, maxY := 0, 0
-
-	for _, vl := range ventLines {
-		if skipDiagonals && vl.IsDiagonal() {
-			continue
-		}
-
-		if maxX < vl.MaxX() {
-			maxX = vl.MaxX()
-		}
-
-		if maxY < vl.MaxY() {
-			maxY = vl.MaxY()
-		}
-
-	}
-
-	// populate initial board
-	readingsYX := make([][]*Reading, maxY+1)
-	for y, _ := range readingsYX {
-		readingsYX[y] = make([]*Reading, maxX+1)
-
-		for x := range readingsYX[y] {
-			readingsYX[y][x] = &Reading{
-				0,
-			}
-		}
-	}
-
-	// populate gridlines
-	for _, vl := range ventLines {
-		if skipDiagonals && vl.IsDiagonal() {
-			continue
-		}
-
-		for _, coord := range vl.Coords() {
-			reading := readingsYX[coord.Y][coord.X]
-			reading.Inc()
-		}
-	}
-
-	grid := &Grid{maxX, maxY, readingsYX}
-
-	fmt.Println(grid)
-
-	return grid
-}
-
-func (g *Grid) NumOverlappingAtLeast(min int) int {
-	count := 0
-
-	for y, row := range g.ReadingsYX {
-		for x := range row {
-			reading := g.ReadingsYX[y][x]
-			if min <= reading.NumVents {
-				count++
-			}
-		}
-	}
-
-	return count
-}
-
-func (g *Grid) String() string {
-	var sb strings.Builder
-
-	sb.WriteString("\n")
-
-	for y := 0; y < len(g.ReadingsYX); y++ {
-		for x := 0; x < len(g.ReadingsYX[y]); x++ {
-			reading := g.ReadingsYX[y][x]
-			sb.WriteString(reading.String())
-		}
-		sb.WriteString("\n")
-	}
-
-	return sb.String()
-}
-
-func part1() {
-	ventLines := load()
+	ventLines := load(reader)
 
 	grid := NewGridWithoutDiagonals(ventLines)
 
-	fmt.Println("part 1: ", grid.NumOverlappingAtLeast(2))
+	return grid.NumOverlappingAtLeast(2), nil
 }
-
-func part2() {
-	ventLines := load()
+func PartTwo(reader *bufio.Reader) (int, error) {
+	ventLines := load(reader)
 
 	grid := NewGridWithDiagonals(ventLines)
 
-	fmt.Println("part 2: ", grid.NumOverlappingAtLeast(2))
+	return grid.NumOverlappingAtLeast(2), nil
 }
 
-func load() (ventLines []*VentLine) {
-	//file, err := os.Open("./test-data/day05.txt")
-	file, err := os.Open("./input-data/day05.txt")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer file.Close()
-
-	r := bufio.NewReader(file)
-
+func load(reader *bufio.Reader) (ventLines []*VentLine) {
 	ventLines = make([]*VentLine, 0)
 	for {
-		line, _, err := r.ReadLine()
+		line, _, err := reader.ReadLine()
 
 		if err == io.EOF {
 			break
