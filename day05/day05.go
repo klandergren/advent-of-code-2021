@@ -1,38 +1,41 @@
 package day05
 
 import (
-	"bufio"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
-	ventLines := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
 
+	ventLines := createVentLines(lines)
 	grid := NewGridWithoutDiagonals(ventLines)
 
 	return grid.NumOverlappingAtLeast(2), nil
 }
+
 func PartTwo(reader io.Reader) (int, error) {
-	ventLines := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	ventLines := createVentLines(lines)
 
 	grid := NewGridWithDiagonals(ventLines)
 
 	return grid.NumOverlappingAtLeast(2), nil
 }
 
-func load(reader io.Reader) (ventLines []*VentLine) {
-	bReader := bufio.NewReader(reader)
-	ventLines = make([]*VentLine, 0)
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		coords := strings.Split(string(line), " -> ")
+func createVentLines(lines []string) (ventLines []*VentLine) {
+	for _, line := range lines {
+		coords := strings.Split(line, " -> ")
 
 		coord0 := strings.Split(coords[0], ",")
 		coord1 := strings.Split(coords[1], ",")
@@ -46,8 +49,6 @@ func load(reader io.Reader) (ventLines []*VentLine) {
 			&Coord{x1, y1},
 			&Coord{x2, y2},
 		})
-
 	}
-
 	return ventLines
 }
