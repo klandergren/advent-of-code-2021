@@ -1,28 +1,25 @@
 package day03
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
 	grid := make([][]int, 0)
-
-	bReader := bufio.NewReader(reader)
-
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		for x, rune := range string(line) {
+	for _, line := range lines {
+		for x, rune := range line {
 			bit, err := strconv.Atoi(string(rune))
 
 			if err != nil {
@@ -89,26 +86,20 @@ func PartOne(reader io.Reader) (int, error) {
 }
 
 func PartTwo(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
 	gridXY := make([][]int, 0)
 	gridYX := make([][]int, 0)
-
-	bReader := bufio.NewReader(reader)
-
 	y := 0
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			return -1, err
-		}
-
+	for _, line := range lines {
 		if len(gridYX) <= y {
-			gridYX = append(gridYX, make([]int, len(string(line))))
+			gridYX = append(gridYX, make([]int, len(line)))
 		}
 
-		for x, rune := range string(line) {
+		for x, rune := range line {
 			bit, err := strconv.Atoi(string(rune))
 
 			if err != nil {
