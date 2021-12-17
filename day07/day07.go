@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	horizontalPositions, err := load(reader)
 	if err != nil {
 		return -1, err
@@ -21,7 +21,7 @@ func PartOne(reader *bufio.Reader) (int, error) {
 
 	return minFuelCost, nil
 }
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	horizontalPositions, err := load(reader)
 	if err != nil {
 		return -1, err
@@ -191,9 +191,11 @@ func FindMinFuelCostPositionPartOneBrute(positions []int) (int, error) {
 	return minFuelCost, nil
 }
 
-func load(reader *bufio.Reader) (horizontalPositions []int, err error) {
+func load(reader io.Reader) (horizontalPositions []int, err error) {
+	bReader := bufio.NewReader(reader)
+
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break

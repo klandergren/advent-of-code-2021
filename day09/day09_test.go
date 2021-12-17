@@ -5,18 +5,24 @@ import (
 	"testing"
 )
 
-func Test_SumRisk(t *testing.T) {
-	p1 := &Point{0, 0, 0}
-	p2 := &Point{0, 0, 0}
+var testInput = `2199943210
+3987894921
+9856789892
+8767896789
+9899965678
+`
 
-	if sum := SumRisk([]*Point{p1, p2}); sum != 2 {
-		t.Errorf("sum risk is %d; want 2", sum)
+func Test_PartOne(t *testing.T) {
+	reader := strings.NewReader(testInput)
+
+	sumRisk, err := PartOne(reader)
+
+	if err != nil {
+		t.Error(err)
 	}
-}
 
-func Test_load(t *testing.T) {
-	hm, err := load(strings.NewReader("2199943210\n3987894921\n"))
-	t.Log(hm)
-	t.Log(err)
+	if sumRisk != 15 {
+		t.Errorf("sum risk for test height map should be 15, got: %d", sumRisk)
+	}
 
 }

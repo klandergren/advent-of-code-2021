@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -102,7 +103,7 @@ func validateInputFilePath(inputFilePath string) error {
 	return nil
 }
 
-func run(day int, part int, reader *bufio.Reader) (result int, err error) {
+func run(day int, part int, reader io.Reader) (result int, err error) {
 	switch day {
 	case 1:
 		switch part {

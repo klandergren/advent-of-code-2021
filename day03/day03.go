@@ -10,11 +10,13 @@ import (
 	"strings"
 )
 
-func PartOne(reader *bufio.Reader) (int, error) {
+func PartOne(reader io.Reader) (int, error) {
 	grid := make([][]int, 0)
 
+	bReader := bufio.NewReader(reader)
+
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break
@@ -86,13 +88,15 @@ func PartOne(reader *bufio.Reader) (int, error) {
 	return int(consumption), nil
 }
 
-func PartTwo(reader *bufio.Reader) (int, error) {
+func PartTwo(reader io.Reader) (int, error) {
 	gridXY := make([][]int, 0)
 	gridYX := make([][]int, 0)
 
+	bReader := bufio.NewReader(reader)
+
 	y := 0
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := bReader.ReadLine()
 
 		if err == io.EOF {
 			break
