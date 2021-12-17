@@ -13,10 +13,9 @@ var testInput = `2199943210
 `
 
 func Test_PartOne(t *testing.T) {
-	reader := strings.NewReader(testInput)
+	r := strings.NewReader(testInput)
 
-	sumRisk, err := PartOne(reader)
-
+	sumRisk, err := PartOne(r)
 	if err != nil {
 		t.Error(err)
 	}
@@ -28,10 +27,9 @@ func Test_PartOne(t *testing.T) {
 }
 
 func Test_PartTwo(t *testing.T) {
-	reader := strings.NewReader(testInput)
+	r := strings.NewReader(testInput)
 
-	product, err := PartTwo(reader)
-
+	product, err := PartTwo(r)
 	if err != nil {
 		t.Error(err)
 	}

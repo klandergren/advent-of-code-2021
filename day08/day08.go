@@ -1,13 +1,19 @@
 package day08
 
 import (
-	"bufio"
 	"io"
 	"strings"
+
+	"github.com/klandergren/advent-of-code-2021/util"
 )
 
 func PartOne(reader io.Reader) (int, error) {
-	readings, err := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	readings, err := createReadings(lines)
 	if err != nil {
 		return -1, err
 	}
@@ -35,7 +41,12 @@ func PartOne(reader io.Reader) (int, error) {
 }
 
 func PartTwo(reader io.Reader) (int, error) {
-	readings, err := load(reader)
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	readings, err := createReadings(lines)
 	if err != nil {
 		return -1, err
 	}
@@ -158,17 +169,9 @@ func Transform(outputSignals []string, transform map[string]string) (transformed
 	return transformedSignals
 }
 
-func load(reader io.Reader) (readings []*Reading, err error) {
-	bReader := bufio.NewReader(reader)
-
-	for {
-		line, _, err := bReader.ReadLine()
-
-		if err == io.EOF {
-			break
-		}
-
-		data := strings.Split(string(line), "|")
+func createReadings(lines []string) (readings []*Reading, err error) {
+	for _, line := range lines {
+		data := strings.Split(line, "|")
 
 		uniqueSignals := strings.Fields(data[0])
 		outputSignals := strings.Fields(data[1])
