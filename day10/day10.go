@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 
 	"github.com/klandergren/advent-of-code-2021/util"
@@ -20,16 +21,11 @@ func PartOne(reader io.Reader) (int, error) {
 
 		chars := strings.Split(line, "")
 
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		fmt.Println("parsing line:", line)
 		_, err := Parse(chars)
 		if err == nil {
-			fmt.Println("incomplete line:", line)
+			// incomplete line
 		} else {
-			fmt.Println("illegal character:", err.Error(), "found in line:", line)
+			//			fmt.Println("illegal character:", err.Error(), "found in line:", line)
 			illegal = append(illegal, err.Error())
 		}
 	}
@@ -53,8 +49,73 @@ func PartOne(reader io.Reader) (int, error) {
 	return score, nil
 }
 
-func Parse(chars []string) (*[]Chunk, error) {
-	fmt.Println("chars:", chars)
+func PartTwo(reader io.Reader) (int, error) {
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	scores := make([]int, 0)
+	for _, line := range lines {
+
+		chars := strings.Split(line, "")
+
+		chunks, err := Parse(chars)
+		if err == nil {
+			completions := make([]string, 0)
+			for _, c := range *chunks {
+				var closingChar string
+				switch c.OpenChar {
+				case "(":
+					closingChar = ")"
+				case "[":
+					closingChar = "]"
+				case "{":
+					closingChar = "}"
+				case "<":
+					closingChar = ">"
+				}
+				completions = append(completions, closingChar)
+			}
+
+			// reverse the list
+			lastIndex := len(completions) - 1
+			for i := 0; i < len(completions)/2; i++ {
+				completions[i], completions[lastIndex-i] = completions[lastIndex-i], completions[i]
+			}
+
+			score := 0
+			for _, c := range completions {
+				switch c {
+				case ")":
+					score = (score * 5) + 1
+				case "]":
+					score = (score * 5) + 2
+				case "}":
+					score = (score * 5) + 3
+				case ">":
+					score = (score * 5) + 4
+				default:
+					return -1, fmt.Errorf("day10: unknown character: %s", c)
+				}
+			}
+			scores = append(scores, score)
+
+		} else {
+			//fmt.Println("illegal character:", err.Error(), "found in line:", line)
+		}
+	}
+
+	// sort
+	sort.Sort(sort.Reverse(sort.IntSlice(scores)))
+
+	// take the middle score
+	score := scores[len(scores)/2]
+
+	return score, nil
+}
+
+func Parse(chars []string) (*[]*Chunk, error) {
 	if len(chars) == 0 {
 		// TODO better error
 		return nil, errors.New("!") // cannot parse empty
@@ -65,19 +126,15 @@ func Parse(chars []string) (*[]Chunk, error) {
 	pos := -1
 	for pos < len(chars) {
 		pos = pos + 1
-		fmt.Println("start pos:", pos)
 
 		if len(chars) <= pos {
 			// TODO better chunk return and error
-			return nil, nil
+			return &chunks, nil
 		}
 
 		char := chars[pos]
-		fmt.Println("start char:", char)
-		fmt.Println("start chunks:", chunks)
 
 		if IsOpen(char) {
-			fmt.Println("creating new")
 			// start new chunk
 			c := &Chunk{char, false, make([]Chunk, 0)}
 			chunks = append(chunks, c)
@@ -94,7 +151,6 @@ func Parse(chars []string) (*[]Chunk, error) {
 			lastPosition := len(chunks) - 1
 			lastChunk := chunks[lastPosition]
 			chunks = chunks[:lastPosition]
-			fmt.Println("closing chunk:", lastChunk)
 			lastOpenChar := lastChunk.OpenChar
 
 			// check for errors
@@ -126,17 +182,12 @@ func Parse(chars []string) (*[]Chunk, error) {
 			if 0 <= len(chunks)-1 {
 				// add it to its parent
 				parentChunk := chunks[len(chunks)-1]
-				fmt.Println("parentChunk:", parentChunk)
 				parentChunk.Chunks = append(parentChunk.Chunks, *lastChunk)
 			} else {
-				fmt.Println("no parent")
+				// no parent
 			}
 
 		}
-
-		fmt.Println("end pos:", pos)
-		fmt.Println("end char:", char)
-		fmt.Println("end chunks:", chunks)
 	}
 
 	return nil, errors.New("!") // how'd we get here?
@@ -144,27 +195,4 @@ func Parse(chars []string) (*[]Chunk, error) {
 
 func IsOpen(c string) bool {
 	return c == "(" || c == "[" || c == "{" || c == "<"
-}
-
-// func IsValid(p, n string) bool {
-// 	switch p {
-// 	case "START":
-// 		return IsOpen(n)
-// 	case "(":
-// 		return IsOpen(n) || n == ")"
-// 	case "[":
-// 		return IsOpen(n) || n == "]"
-// 	case "{":
-// 		return IsOpen(n) || n == "}"
-// 	case "<":
-// 		return IsOpen(n) || n == ">"
-// 	case ">":
-// 	case "}":
-// 	case "]":
-// 	case ")":
-// 	}
-// }
-
-func PartTwo(reader io.Reader) (int, error) {
-	return -1, errors.New("not implemented")
 }

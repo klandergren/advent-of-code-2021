@@ -32,5 +32,15 @@ func Test_PartOne(t *testing.T) {
 }
 
 func Test_PartTwo(t *testing.T) {
-	t.SkipNow()
+	r := strings.NewReader(testInput)
+
+	score, err := PartTwo(r)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if score != 288957 {
+		t.Errorf("score for test input should be 288957, got: %d", score)
+	}
+
 }
