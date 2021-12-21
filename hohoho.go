@@ -19,6 +19,21 @@ import (
 	"github.com/klandergren/advent-of-code-2021/day08"
 	"github.com/klandergren/advent-of-code-2021/day09"
 	"github.com/klandergren/advent-of-code-2021/day10"
+	"github.com/klandergren/advent-of-code-2021/day11"
+	"github.com/klandergren/advent-of-code-2021/day12"
+	"github.com/klandergren/advent-of-code-2021/day13"
+	"github.com/klandergren/advent-of-code-2021/day14"
+	"github.com/klandergren/advent-of-code-2021/day15"
+	"github.com/klandergren/advent-of-code-2021/day16"
+	"github.com/klandergren/advent-of-code-2021/day17"
+	"github.com/klandergren/advent-of-code-2021/day18"
+	"github.com/klandergren/advent-of-code-2021/day19"
+	"github.com/klandergren/advent-of-code-2021/day20"
+	"github.com/klandergren/advent-of-code-2021/day21"
+	"github.com/klandergren/advent-of-code-2021/day22"
+	"github.com/klandergren/advent-of-code-2021/day23"
+	"github.com/klandergren/advent-of-code-2021/day24"
+	"github.com/klandergren/advent-of-code-2021/day25"
 )
 
 var dayFlag = flag.Int("day", 1, "[1-25] the day number to run, without leading 0")
@@ -175,6 +190,111 @@ func run(day int, part int, reader io.Reader) (result int, err error) {
 			return day10.PartOne(reader)
 		case 2:
 			return day10.PartTwo(reader)
+		}
+	case 11:
+		switch part {
+		case 1:
+			return day11.PartOne(reader)
+		case 2:
+			return day11.PartTwo(reader)
+		}
+	case 12:
+		switch part {
+		case 1:
+			return day12.PartOne(reader)
+		case 2:
+			return day12.PartTwo(reader)
+		}
+	case 13:
+		switch part {
+		case 1:
+			return day13.PartOne(reader)
+		case 2:
+			return day13.PartTwo(reader)
+		}
+	case 14:
+		switch part {
+		case 1:
+			return day14.PartOne(reader)
+		case 2:
+			return day14.PartTwo(reader)
+		}
+	case 15:
+		switch part {
+		case 1:
+			return day15.PartOne(reader)
+		case 2:
+			return day15.PartTwo(reader)
+		}
+	case 16:
+		switch part {
+		case 1:
+			return day16.PartOne(reader)
+		case 2:
+			return day16.PartTwo(reader)
+		}
+	case 17:
+		switch part {
+		case 1:
+			return day17.PartOne(reader)
+		case 2:
+			return day17.PartTwo(reader)
+		}
+	case 18:
+		switch part {
+		case 1:
+			return day18.PartOne(reader)
+		case 2:
+			return day18.PartTwo(reader)
+		}
+	case 19:
+		switch part {
+		case 1:
+			return day19.PartOne(reader)
+		case 2:
+			return day19.PartTwo(reader)
+		}
+	case 20:
+		switch part {
+		case 1:
+			return day20.PartOne(reader)
+		case 2:
+			return day20.PartTwo(reader)
+		}
+	case 21:
+		switch part {
+		case 1:
+			return day21.PartOne(reader)
+		case 2:
+			return day21.PartTwo(reader)
+		}
+	case 22:
+		switch part {
+		case 1:
+			return day22.PartOne(reader)
+		case 2:
+			return day22.PartTwo(reader)
+		}
+	case 23:
+		switch part {
+		case 1:
+			return day23.PartOne(reader)
+		case 2:
+			return day23.PartTwo(reader)
+		}
+	case 24:
+		switch part {
+		case 1:
+			return day24.PartOne(reader)
+		case 2:
+			return day24.PartTwo(reader)
+		}
+	case 25:
+		switch part {
+		case 1:
+			return day25.PartOne(reader)
+		case 2:
+			return day25.PartTwo(reader)
 		}
 	}
 
