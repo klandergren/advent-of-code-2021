@@ -102,3 +102,22 @@ func Test_Counts(t *testing.T) {
 		t.Errorf("expected c.TotalFlashCount return of 1656 but got: %d", c.TotalFlashCount)
 	}
 }
+
+func Test_FirstSynchronizeStep(t *testing.T) {
+	r := strings.NewReader(testInput_Counts)
+
+	lines, err := util.LoadLines(r)
+	if err != nil {
+		t.Error(err)
+	}
+
+	c, err := NewCavern(lines)
+	if err != nil {
+		t.Error(err)
+	}
+
+	step := c.FirstSynchronizeStep()
+	if step != 195 {
+		t.Errorf("expected sync after step 195 but got: %d", step)
+	}
+}

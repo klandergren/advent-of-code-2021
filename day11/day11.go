@@ -1,7 +1,6 @@
 package day11
 
 import (
-	"errors"
 	"io"
 
 	"github.com/klandergren/advent-of-code-2021/util"
@@ -24,5 +23,17 @@ func PartOne(reader io.Reader) (int, error) {
 }
 
 func PartTwo(reader io.Reader) (int, error) {
-	return -1, errors.New("not implemented")
+	lines, err := util.LoadLines(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	c, err := NewCavern(lines)
+	if err != nil {
+		return -1, err
+	}
+
+	firstSynchronizeStep := c.FirstSynchronizeStep()
+
+	return firstSynchronizeStep, nil
 }

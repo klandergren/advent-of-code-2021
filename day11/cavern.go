@@ -36,6 +36,23 @@ func NewCavern(lines []string) (c *Cavern, err error) {
 	return &Cavern{GridYX: gridYX}, nil
 }
 
+func (c *Cavern) FirstSynchronizeStep() (step int) {
+	numOctopi := len(c.GridYX) * len(c.GridYX)
+	numZeros := 0
+	for ok := true; ok; ok = (numZeros != numOctopi) {
+		numZeros = 0
+		c.Step()
+		for _, row := range c.GridYX {
+			for _, o := range row {
+				if o.EnergyLevel == 0 {
+					numZeros += 1
+				}
+			}
+		}
+	}
+	return c.StepCount
+}
+
 // just the amount of flashes during `steps`; inspect `TotalFlashCount` for total
 func (c *Cavern) Advance(steps int) (flashCount int) {
 	for i := 0; i < steps; i++ {
