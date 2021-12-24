@@ -18,31 +18,29 @@ var testInput = `5483143223
 `
 
 func Test_PartOne(t *testing.T) {
-	t.SkipNow()
 	r := strings.NewReader(testInput)
 
-	score, err := PartOne(r)
+	totalFlashes, err := PartOne(r)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if score != 26397 {
-		t.Errorf("score for test input should be 26397, got: %d", score)
+	if totalFlashes != 1656 {
+		t.Errorf("totalFlashes for test input should be 1656, got: %d", totalFlashes)
 	}
 
 }
 
 func Test_PartTwo(t *testing.T) {
-	t.SkipNow()
 	r := strings.NewReader(testInput)
 
-	score, err := PartTwo(r)
+	stepNum, err := PartTwo(r)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if score != 288957 {
-		t.Errorf("score for test input should be 288957, got: %d", score)
+	if stepNum != 195 {
+		t.Errorf("stepNum for test input should be 195, got: %d", stepNum)
 	}
 
 }
