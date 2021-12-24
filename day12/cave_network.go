@@ -1,7 +1,6 @@
 package day12
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -37,12 +36,12 @@ func NewCaveNetwork(lines []string) (*CaveNetwork, error) {
 	return cn, nil
 }
 
-func (cn *CaveNetwork) AllPaths() [][]string {
+func (cn *CaveNetwork) AllPaths(shouldAllowDouble bool) [][]string {
 	cw := &CaveWalker{}
-	paths := cw.WalkAll(cn, "start", "end")
+	paths := cw.WalkAll(cn, "start", "end", shouldAllowDouble)
 
-	for _, p := range paths {
-		fmt.Println(strings.Join(p, ","))
-	}
+	// for _, p := range paths {
+	// 	fmt.Println(strings.Join(p, ","))
+	// }
 	return paths
 }
