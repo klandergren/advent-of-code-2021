@@ -11,12 +11,24 @@ type Instruction struct {
 	Value     int
 }
 
-func NewInstruction(line string) (*Instruction, error) {
+func LoadInstructions(lines []string) (instructions []Instruction, err error) {
+	for _, line := range lines {
+		i, err := NewInstruction(line)
+		if err != nil {
+			return instructions, err
+		}
+
+		instructions = append(instructions, i)
+	}
+	return instructions, nil
+}
+
+func NewInstruction(line string) (Instruction, error) {
 	parts := strings.Split(line, "=")
 
 	value, err := strconv.Atoi(parts[1])
 	if err != nil {
-		return nil, err
+		return Instruction{}, err
 	}
 
 	var direction string
@@ -26,7 +38,7 @@ func NewInstruction(line string) (*Instruction, error) {
 		direction = "up"
 	}
 
-	return &Instruction{
+	return Instruction{
 		Raw:       line,
 		Direction: direction,
 		Value:     value,

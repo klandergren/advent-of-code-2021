@@ -1,8 +1,45 @@
 package day13
 
-import "testing"
+import (
+	"strings"
+	"testing"
 
-func Test_New(t *testing.T) {
+	"github.com/klandergren/advent-of-code-2021/util"
+)
+
+func Test_LoadInstructions(t *testing.T) {
+	data := `fold along x=655
+fold along y=447
+fold along x=327
+fold along y=223
+fold along x=163
+fold along y=111
+fold along x=81
+fold along y=55
+fold along x=40
+fold along y=27
+fold along y=13
+fold along y=6
+`
+
+	r := strings.NewReader(data)
+	lines, err := util.LoadLines(r)
+	if err != nil {
+		t.Error(err)
+	}
+
+	instructions, err := LoadInstructions(lines)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(instructions) != 12 {
+		t.Errorf("instructions should have length 12, got: %d\n", len(instructions))
+	}
+
+}
+
+func Test_NewInstructions(t *testing.T) {
 	data := []struct {
 		line        string
 		instruction Instruction
