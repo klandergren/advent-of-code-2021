@@ -40,11 +40,11 @@ fold along y=6
 }
 
 func Test_NewInstructions(t *testing.T) {
-	data := []struct {
+	testCases := map[string]struct {
 		line        string
 		instruction Instruction
 	}{
-		{
+		"y direction": {
 			line: "fold along y=7",
 			instruction: Instruction{
 				Raw:       "fold along y=7",
@@ -52,7 +52,7 @@ func Test_NewInstructions(t *testing.T) {
 				Value:     7,
 			},
 		},
-		{
+		"x direction": {
 			line: "fold along x=5",
 			instruction: Instruction{
 				Raw:       "fold along x=5",
@@ -62,23 +62,29 @@ func Test_NewInstructions(t *testing.T) {
 		},
 	}
 
-	for _, expected := range data {
-		i, err := NewInstruction(expected.line)
-		if err != nil {
-			t.Error(err)
-		}
+	for name, tc := range testCases {
+		testCase := tc // capture for scope
+		t.Run(name, func(tSub *testing.T) {
+			tSub.Parallel()
 
-		if i.Raw != expected.instruction.Raw {
-			t.Errorf("instruction should have Raw: %q got: %q\n", expected.instruction.Raw, i.Raw)
-		}
+			i, err := NewInstruction(testCase.line)
+			if err != nil {
+				tSub.Fatal(err)
+			}
 
-		if i.Direction != expected.instruction.Direction {
-			t.Errorf("instruction should have Direction: %q got: %q\n", expected.instruction.Direction, i.Direction)
-		}
+			if i.Raw != testCase.instruction.Raw {
+				tSub.Fatalf("instruction should have Raw: %q got: %q\n", testCase.instruction.Raw, i.Raw)
+			}
 
-		if i.Value != expected.instruction.Value {
-			t.Errorf("instruction should have Value: %d got: %d\n", expected.instruction.Value, i.Value)
-		}
+			if i.Direction != testCase.instruction.Direction {
+				tSub.Fatalf("instruction should have Direction: %q got: %q\n", testCase.instruction.Direction, i.Direction)
+			}
+
+			if i.Value != testCase.instruction.Value {
+				tSub.Fatalf("instruction should have Value: %d got: %d\n", testCase.instruction.Value, i.Value)
+			}
+
+		})
 
 	}
 
