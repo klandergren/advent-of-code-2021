@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/klandergren/advent-of-code-2021/day01"
 	"github.com/klandergren/advent-of-code-2021/day02"
@@ -89,7 +90,7 @@ func loadFileAndRun(inputFilePath string, day int, part int) error {
 		return err
 	}
 
-	fmt.Printf("Answer day %d part %d (from input \"%s\"):\n%d\n", day, part, inputFilePath, result)
+	fmt.Printf("Answer day %d part %d (from input \"%s\"):\n%s\n", day, part, inputFilePath, result)
 	return nil
 }
 
@@ -119,12 +120,13 @@ func validateInputFilePath(inputFilePath string) error {
 	return nil
 }
 
-func run(day int, part int, reader io.Reader) (result int, err error) {
+func run(day int, part int, reader io.Reader) (result string, err error) {
 	switch day {
 	case 1:
 		switch part {
 		case 1:
-			return day01.PartOne(reader)
+			r, err := day01.PartOne(reader)
+			return strconv.Itoa(r), err
 		case 2:
 			return day01.PartTwo(reader)
 		}
@@ -298,5 +300,5 @@ func run(day int, part int, reader io.Reader) (result int, err error) {
 		}
 	}
 
-	return -1, errors.New("problem running")
+	return "", errors.New("problem running")
 }
