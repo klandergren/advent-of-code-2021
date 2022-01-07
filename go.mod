@@ -1,3 +1,3 @@
-module github.com/klandergren/advent-of-code-2021
+module github.com/klandergren/aoc2021
 
 go 1.15
