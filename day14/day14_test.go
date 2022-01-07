@@ -37,3 +37,17 @@ func Test_PartOne(t *testing.T) {
 	}
 
 }
+
+func Test_PartTwo(t *testing.T) {
+	r := strings.NewReader(inputData)
+
+	ans, err := PartTwo(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if ans != 2188189693529 {
+		t.Errorf("expected 2188189693529 but got: %d", ans)
+	}
+
+}

@@ -3,19 +3,32 @@ package day14
 import "sort"
 
 type Polymer struct {
-	Template []rune
-	Rules    []Rule
-	Sequence []rune
-	Step     int
+	Template  []rune
+	Rules     []Rule
+	Sequence  []rune
+	Step      int
+	Histogram map[rune]int
 }
 
 func NewPolymer(template []rune, rules []Rule) *Polymer {
-	return &Polymer{
-		Template: template,
-		Rules:    rules,
-		Sequence: template,
-		Step:     0,
+	h := make(map[rune]int)
+
+	for _, r := range template {
+		h[r] += 1
 	}
+
+	return &Polymer{
+		Template:  template,
+		Rules:     rules,
+		Sequence:  template,
+		Step:      0,
+		Histogram: h,
+	}
+}
+
+func (p *Polymer) ApplySteps2(n int) {
+	m := make(map[string](map[rune]int), 0)
+
 }
 
 func (p *Polymer) ApplySteps(n int) {
@@ -32,7 +45,9 @@ func (p *Polymer) ApplySteps(n int) {
 			newSequence = append(newSequence, r1)
 			for _, rule := range p.Rules {
 				if rule.Matches(pair) {
-					newSequence = append(newSequence, rule.Element())
+					e := rule.Element()
+					newSequence = append(newSequence, e)
+					p.Histogram[e] += 1
 					// we know there will only be one matching rule
 					break
 				}
@@ -55,7 +70,7 @@ func (p *Polymer) Answer() int {
 
 func (p *Polymer) MostCommon() int {
 	values := make([]int, 0)
-	for _, v := range p.Histogram() {
+	for _, v := range p.Histogram {
 		values = append(values, v)
 	}
 
@@ -66,7 +81,7 @@ func (p *Polymer) MostCommon() int {
 
 func (p *Polymer) LeastCommon() int {
 	values := make([]int, 0)
-	for _, v := range p.Histogram() {
+	for _, v := range p.Histogram {
 		values = append(values, v)
 	}
 
@@ -76,15 +91,7 @@ func (p *Polymer) LeastCommon() int {
 }
 
 func (p *Polymer) CountOf(r rune) int {
-	return p.Histogram()[r]
-}
-
-func (p *Polymer) Histogram() (h map[rune]int) {
-	h = make(map[rune]int)
-	for _, r := range p.Sequence {
-		h[r] += 1
-	}
-	return h
+	return p.Histogram[r]
 }
 
 func (p *Polymer) Length() int {

@@ -1,7 +1,6 @@
 package day14
 
 import (
-	"errors"
 	"io"
 
 	"github.com/klandergren/advent-of-code-2021/util"
@@ -19,7 +18,14 @@ func PartOne(reader io.Reader) (int, error) {
 }
 
 func PartTwo(reader io.Reader) (int, error) {
-	return -1, errors.New("not implemented")
+	p, err := Load(reader)
+	if err != nil {
+		return -1, err
+	}
+
+	p.ApplySteps(40)
+
+	return p.Answer(), nil
 }
 
 func Load(reader io.Reader) (p *Polymer, err error) {
